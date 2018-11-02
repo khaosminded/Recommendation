@@ -3,9 +3,13 @@ package db;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import entity.Item;
+import entity.Item.ItemBuilder;
 import external.YelpAPI;
 
 public class MySQLConnection {
@@ -63,7 +67,7 @@ public class MySQLConnection {
 			
 			preparedStatement.execute();
 			
-			sql = "INSERT IGNORE INTO catergories VALUES (?, ?)";
+			sql = "INSERT IGNORE INTO categories VALUES (?, ?)";
 			preparedStatement = connection.prepareStatement(sql);
 			preparedStatement.setString(1, item.getItemId());
 			for (String category : item.getCategories()) {
@@ -96,7 +100,93 @@ public class MySQLConnection {
             e.printStackTrace();
         }
     }
+	
+	
+	public Set<String> getCategories(String itemId) {
+		if (connection == null) {
+			System.err.println("DB connection failed");
+			return null;
+		}
+		Set<String> categories = new HashSet<>();
 
+		try {
+			String sql = "SELECT category FROM categories WHERE item_id = ?";
+			PreparedStatement ps = connection.prepareStatement(sql);
+			ps.setString(1, itemId);
+			ResultSet rs = ps.executeQuery();
+			
+			while (rs.next()) {
+				categories.add(rs.getString("category"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return categories;
+	}
+
+
+	public Set<String> getFavoriteItemIds(String userId) {
+		if (connection == null) {
+			System.err.println("DB connection failed");
+			return new HashSet<>();
+		}
+		Set<String> favoriteItemIds = new HashSet<>();
+		
+		try {
+			String sql = "SELECT item_id FROM history WHERE user_id = ?";
+			PreparedStatement ps = connection.prepareStatement(sql);
+			ps.setString(1, userId);
+			ResultSet rs = ps.executeQuery();
+			
+			while (rs.next()) {
+				favoriteItemIds.add(rs.getString("item_id"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return favoriteItemIds;
+	}
+
+	public Set<Item> getFavoritItems(String userId) {
+		if (connection == null) {
+			System.err.println("DB connection failed");
+			return new HashSet<>();
+		}
+		Set<Item> favoriteItems = new HashSet<>();
+		Set<String> itemIds = getFavoriteItemIds(userId);
+		try {
+			String sql = "SELECT * FROM items WHERE item_id = ?";
+			PreparedStatement pStatement = connection.prepareStatement(sql);
+			
+			for (String itemId : itemIds) {
+				pStatement.setString(1, itemId);
+				ResultSet resultSet = pStatement.executeQuery();
+				
+				ItemBuilder builder = new ItemBuilder();
+				while (resultSet.next()) {
+					builder.setItemId(resultSet.getString("item_id"));
+					builder.setName(resultSet.getString("name"));
+					builder.setAddress(resultSet.getString("address"));
+					builder.setUrl(resultSet.getString("url"));
+					builder.setImageUrl(resultSet.getString("image_url"));
+					builder.setRating(resultSet.getDouble("rating"));
+					builder.setDistance(resultSet.getDouble("distance"));
+					builder.setCategories(getCategories(itemId));
+					
+					favoriteItems.add(builder.build());
+				}
+			}
+			
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return favoriteItems;
+		
+	}
 	public void unsetFavoriteItems(String userId, List<String> itemIds) {
 		if (connection == null) {
 	        System.err.println("DB connectionection failed");

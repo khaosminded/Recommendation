@@ -1,6 +1,6 @@
 package rpc;
 
-import external.*;
+
 import entity.*;
 
 import java.io.IOException;
