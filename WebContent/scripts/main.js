@@ -1,14 +1,6 @@
 (function() {
 
   /**
-   * Variables
-   */
-  var user_id = '1111';
-  var user_fullname = 'John';
-  var lng = -122.08;
-  var lat = 37.38;
-
-  /**
    * Initialize major event handlers
    */
   function init() {
@@ -17,15 +9,14 @@
     document.querySelector('#nearby-btn').addEventListener('click', loadNearbyItems);
     document.querySelector('#fav-btn').addEventListener('click', loadFavoriteItems);
     document.querySelector('#recommend-btn').addEventListener('click', loadRecommendedItems);
-    //validateSession();
-    onSessionValid({"user_id":"1111","name":"John Smith","status":"OK"});
+    validateSession();
+    //onSessionValid({"user_id":"1111","name":"John Smith","status":"OK"});
   }
 
   /**
    * Session
    */
   function validateSession() {
-    onSessionInvalid();
     // The request parameters
     var url = './login';
     var req = JSON.stringify({});
@@ -42,7 +33,9 @@
         if (result.status === 'OK') {
           onSessionValid(result);
         }
-      });
+      }, 
+      // session expired
+      onSessionInvalid);
   }
 
   function onSessionValid(result) {
@@ -134,7 +127,10 @@
         console.warn('Getting location by IP failed.');
       }
       loadNearbyItems();
-    });
+    },      // failed callback
+      function() {
+        showErrorMessage('Cannot get loaction.');
+      });
   }
 
   // -----------------------------------
@@ -167,8 +163,7 @@
       // error
       function() {
         showLoginError();
-      },
-      true);
+      });
   }
 
   function showLoginError() {
@@ -400,7 +395,12 @@
           li.dataset.favorite = favorite;
           favIcon.className = favorite ? 'fa fa-heart' : 'fa fa-heart-o';
         }
-      });
+      },
+      // failed callback
+      function() {
+        showErrorMessage('Cannot change favorite items.');
+      }  
+    );
   }
 
   // -------------------------------------
