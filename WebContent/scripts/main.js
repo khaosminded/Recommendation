@@ -489,7 +489,7 @@
       className: 'stars'
     });
 
-    for (var i = 0; i < item.rating; i++) {
+    for (var i = 1; i <= item.rating; i++) {
       var star = $create('i', {
         className: 'fa fa-star'
       });
