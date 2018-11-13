@@ -59,7 +59,8 @@ public class Signup extends HttpServlet {
 				obj.put("last_name", lastName);
 				
 				
-				if (userId == null || password == null || firstName == null || lastName == null) {
+				if (userId == null || password == null || firstName == null || lastName == null || 
+						userId.length() == 0 || password.length() == 0 || firstName.length() == 0) {
 					obj.put("status", "Invalid format.");
 				} else if (conn.register(userId, password, firstName, lastName)) {
 					obj.put("status", "OK");

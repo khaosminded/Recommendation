@@ -9,6 +9,7 @@
     document.querySelector('#nearby-btn').addEventListener('click', loadNearbyItems);
     document.querySelector('#fav-btn').addEventListener('click', loadFavoriteItems);
     document.querySelector('#recommend-btn').addEventListener('click', loadRecommendedItems);
+    document.querySelector('#sign-up').addEventListener('click',function(){window.location.href="./signup.html"; });
     validateSession();
     //onSessionValid({"user_id":"1111","name":"John Smith","status":"OK"});
   }

@@ -1,0 +1,38 @@
+@charset "UTF-8";
+
+body {
+	background: #F3BB43;
+}
+#signup-form {
+	color: #624630;
+	margin: 0px auto;
+	overflow: auto;
+	padding: 40px;
+	width: 300px;
+}
+
+#signup-form label {
+	display: block;
+}
+
+#signup-form input {
+	border: none;
+	display: block;
+	margin-bottom: 10px;
+	padding: 8px;
+	width: 94%;
+}
+
+#signup-form button {
+	cursor: pointer;
+	float: right;
+	padding: 8px 20px;
+	text-align: right;
+}
+
+#signup-error { 
+	color: #990000;
+}
+
+
+

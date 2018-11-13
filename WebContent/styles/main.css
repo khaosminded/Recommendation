@@ -131,7 +131,22 @@ ul {
 	padding: 8px 20px;
 	text-align: right;
 }
+#login-form button {
+	cursor: pointer;
+	float: right;
+	padding: 8px 20px;
+	text-align: right;
+}
 
+#login-form p span[id=sign-up]{
+	cursor: pointer;
+    text-decoration: underline
+}
+#login-form p {
+    padding: 8px 2px;
+	font-size: 0.8em;
+    
+}
 #login-error {
 	clear: both;
 	color: #990000;
