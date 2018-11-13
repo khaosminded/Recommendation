@@ -60,7 +60,7 @@ public class Login extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-MySQLConnection conn = new MySQLConnection ();
+		MySQLConnection conn = new MySQLConnection ();
 		
 		try {
 			JSONObject input = RpcHelper.readJSONObject(request);

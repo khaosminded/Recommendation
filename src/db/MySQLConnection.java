@@ -249,6 +249,36 @@ public class MySQLConnection {
 		}
 		return status;
 	}
+	public boolean register(String userId, String pwd, String fname, String lname) {
+		if (connection == null) {
+			System.err.println("DB connection failed");
+			return false;
+		}
+		
+
+		try {
+			String sql = "SELECT * FROM users WHERE user_id = ?";
+			PreparedStatement preparedStatemen = connection.prepareStatement(sql);
+			preparedStatemen.setString(1, userId);
+			ResultSet resultSet = preparedStatemen.executeQuery();
+			if (resultSet.next()) {
+				//this userId has been already registered before
+				return false;
+			}
+			sql = "INSERT INTO users VALUES (?, ?, ?, ?)";
+			preparedStatemen = connection.prepareStatement(sql);
+			preparedStatemen.setString(1, userId);
+			preparedStatemen.setString(2, pwd);
+			preparedStatemen.setString(3, fname);
+			preparedStatemen.setString(4, lname);
+			preparedStatemen.execute();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+	}
 
 	
 }
