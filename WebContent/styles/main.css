@@ -78,11 +78,12 @@ ul {
 
 /**
  * main header
+ http://folkartcarsi.com/img/4.jpg
  */
 .container>header {
 	align-items: center;
 	background:
-		url('http://folkartcarsi.com/img/4.jpg')
+		url('http://ichef.bbci.co.uk/wwfeatures/wm/live/1280_640/images/live/p0/3b/0c/p03b0ckb.jpg')
 		no-repeat 50% 50%;
 	background-size: 100%;
 	display: flex;
@@ -98,8 +99,9 @@ ul {
 	padding-left: 5px;
 }
 
+/*#FBAF41;*/
 .container>header span {
-	color: #FBAF41;
+	color: #363C4D;
 }
 
 /**
