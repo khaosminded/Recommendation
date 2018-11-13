@@ -8,6 +8,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+
+
 import entity.Item;
 import entity.Item.ItemBuilder;
 import external.YelpAPI;
@@ -101,7 +103,24 @@ public class MySQLConnection {
         }
     }
 	
-	
+	public void unsetFavoriteItems(String userId, List<String> itemIds) {
+		if (connection == null) {
+	        System.err.println("DB connectionection failed");
+	        return;
+        }
+    
+		try {
+	        String sql = "DELETE FROM history WHERE user_id = ? AND item_id = ?";
+	        PreparedStatement ps = connection.prepareStatement(sql);
+	        ps.setString(1, userId);
+	        for (String itemId : itemIds) {
+	            ps.setString(2, itemId);
+	            ps.execute();
+	        }
+        } catch (Exception e) {
+        	e.printStackTrace();
+        }
+    }
 	public Set<String> getCategories(String itemId) {
 		if (connection == null) {
 			System.err.println("DB connection failed");
@@ -187,23 +206,49 @@ public class MySQLConnection {
 		return favoriteItems;
 		
 	}
-	public void unsetFavoriteItems(String userId, List<String> itemIds) {
+	public String getFullname(String userId) {
 		if (connection == null) {
-	        System.err.println("DB connectionection failed");
-	        return;
-        }
-    
+			System.err.println("DB connection failed");
+			return "";
+		}
+		String fullName = null;
 		try {
-	        String sql = "DELETE FROM history WHERE user_id = ? AND item_id = ?";
-	        PreparedStatement ps = connection.prepareStatement(sql);
-	        ps.setString(1, userId);
-	        for (String itemId : itemIds) {
-	            ps.setString(2, itemId);
-	            ps.execute();
-	        }
-        } catch (Exception e) {
-        	e.printStackTrace();
-        }
-    }
+			String sql = "SELECT * FROM users WHERE user_id = ?";
+			PreparedStatement preparedStatemen = connection.prepareStatement(sql);
+			preparedStatemen.setString(1, userId);
+			ResultSet resultSet = preparedStatemen.executeQuery();
+			if (resultSet.next()) {
+				String firstName = resultSet.getString("first_name");
+				String lastName = resultSet.getString("last_name");
+				fullName = firstName + " " + lastName;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return fullName;
+	}
+	public boolean verifyLogin(String userId, String pwd) {
+		if (connection == null) {
+			System.err.println("DB connection failed");
+			return false;
+		}
+		boolean status = false;
+		
+		try {
+			String sql = "SELECT * FROM users WHERE user_id = ?";
+			PreparedStatement preparedStatemen = connection.prepareStatement(sql);
+			preparedStatemen.setString(1, userId);
+			ResultSet resultSet = preparedStatemen.executeQuery();
+			String truepwd = null;
+			if (resultSet.next()) {
+				truepwd = resultSet.getString("password");
+			}
+			status = truepwd.equals(truepwd);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return status;
+	}
+
 	
 }
